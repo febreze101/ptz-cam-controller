@@ -75,9 +75,21 @@ export default function PtzController() {
         console.log(`action 'pan-right'; position: ${newPanPosition}`);
     };
 
-    useGesture({
-        onDrag: ({ event, offset: [x]})
-    })
+    const bindDrag = useDrag(({ movement: [mx, my], direction: [dx, dy] }) => {
+        if (dx > 0) { // Dragging to the right
+            handlePanRight()
+        } else if (dx < 0) {
+            handlePanLeft()
+        }
+        if (dy > 0) {
+            handleTiltUp()
+        } else if (dy < 0) {
+            handleTiltDown()
+        }
+    }, {
+        threshold: 10, // Minimum drag distance to trigger the action
+    });
+
 
     // Controls to pass to the transformComponent
     const Controls = () => {
@@ -98,17 +110,10 @@ export default function PtzController() {
     return (
         <>
             <Box sx={{ background: '#d3d3d3', minHeight: '100vh', p: 3 }}>
-                <TransformWrapper>
-                    <TransformComponent>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                <div {...bindDrag()} style={{ touchAction: 'none', width: '100%', height: '100vh', background: '#f0f0f0' }}>
+                    Swipe left or right to pan, up or down to tilt
+                </div>
 
-                            <div style={{ width: "500px", height: "500px", background: "#f0f0f0" }}>
-                                
-                            </div>
-                            <Controls />
-                        </Box>
-                    </TransformComponent>
-                </TransformWrapper>
             </Box>
         </>
     )
