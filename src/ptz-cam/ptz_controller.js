@@ -165,32 +165,44 @@ export default function PtzController() {
 
         setPanPosition(Math.min(newPanPos, panRange));
         setTiltPosition(Math.min(newTiltPos, tiltRange));
-        console.log(panPosition, tiltPosition);
-        // sendJsonMessage({ zoom_absolute: newPanPos, tilt_absolute: newTiltPos});
+        console.log(
+          "pan_absolute: " + panPosition,
+          "tilt_absolute: " + tiltPosition
+        );
+        // sendJsonMessage({ pan_absolute: newPanPos, tilt_absolute: newTiltPos});
       } else if (quadrant.current === "quadrant2") {
         const newPanPos = panPosition + incrementAmountX;
         const newTiltPos = tiltPosition + Math.abs(incrementAmountY);
 
         setPanPosition(Math.max(newPanPos, -panRange));
         setTiltPosition(Math.min(newTiltPos, tiltRange));
-        console.log(panPosition, tiltPosition);
-        // sendJsonMessage({ zoom_absolute: newPanPos, tilt_absolute: newTiltPos});
+        console.log(
+          "pan_absolute: " + panPosition,
+          "tilt_absolute: " + tiltPosition
+        );
+        // sendJsonMessage({ pan_absolute: newPanPos, tilt_absolute: newTiltPos});
       } else if (quadrant.current === "quadrant3") {
         const newPanPos = panPosition + incrementAmountX;
         const newTiltPos = tiltPosition + incrementAmountY;
 
         setPanPosition(Math.max(newPanPos, -panRange));
         setTiltPosition(Math.max(newTiltPos, -tiltRange));
-        console.log(panPosition, tiltPosition);
-        // sendJsonMessage({ zoom_absolute: newPanPos, tilt_absolute: newTiltPos});
+        console.log(
+          "pan_absolute: " + panPosition,
+          "tilt_absolute: " + tiltPosition
+        );
+        // sendJsonMessage({ pan_absolute: newPanPos, tilt_absolute: newTiltPos});
       } else if (quadrant.current === "quadrant4") {
         const newPanPos = panPosition + Math.abs(incrementAmountX);
         const newTiltPos = tiltPosition + incrementAmountY;
 
         setPanPosition(Math.min(newPanPos, panRange));
         setTiltPosition(Math.max(newTiltPos, -tiltRange));
-        console.log(panPosition, tiltPosition);
-        // sendJsonMessage({ zoom_absolute: newPanPos, tilt_absolute: newTiltPos});
+        console.log(
+          "pan_absolute: " + panPosition,
+          "tilt_absolute: " + tiltPosition
+        );
+        // sendJsonMessage({ pan_absolute: newPanPos, tilt_absolute: newTiltPos});
       }
     }
   };
@@ -199,7 +211,6 @@ export default function PtzController() {
   const gestureRecognizer = useGesture(
     {
       onPointerDown: (state) => {
-        console.log("onPointerDown", state);
         const { event } = state;
         handleTapToMove(event);
       },
