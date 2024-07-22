@@ -16,6 +16,7 @@ import {
     createUseGesture,
     useDrag,
 } from "@use-gesture/react";
+import { click } from "@testing-library/user-event/dist/click";
 
 export default function PtzController() {
     const panRange = 648000;
@@ -64,12 +65,86 @@ export default function PtzController() {
     };
 
     const resetCamera = () => {
+        let maxWidth = 259200
+        let maxHeight = 39600
+        const { width, height } = touchAreaRef.current.getBoundingClientRect();
+        let areaWidthIncrements = (( width ) * 3600) / maxWidth;
+        let areaHeightIncrements = (( height ) * 3600) /  maxHeight;
+
+        console.log("width: " + width + ", height: " + height);
+        console.log("areaWidthIncrements: " + areaWidthIncrements + ", areaHeightIncrements: " + areaHeightIncrements);
+
+        let leftBound = currCenterX - ((areaWidthIncrements) * 36) * 3600
+
+        console.log("left bound", leftBound);
+        // console.log("left bound", Math.round(leftBound / 3600) * 3600);
+        
+        console.log("right bound", currCenterX + (areaHeightIncrements * 11));
+        setLeftBound(currCenterX - (width / 2) * 36)
+        setRightbound(currCenterX + (width / 2) * 36)
+
         setCurrCenterX(0);
         setCurrCenterY(0);
         sendJsonMessage({ pan_absolute: 0, tilt_absolute: 0 });
     }
 
-    
+    // useEffect(() => {
+    //     resetCamera();
+    // }, [])
+
+    const handleTap = ({ clientX, clientY }) => {
+        
+        if (touchAreaRef.current) {
+            // get dimmensions of touch area
+            const { width, height, left, top, right, bottom } = touchAreaRef.current.getBoundingClientRect();
+            
+            let maxWidth = 259200
+            let maxHeight = 39600
+            let areaWidthIncrements = (( width - (left * 2) ) * 3600) / maxWidth;
+            let areaHeightIncrements = (( height - top - (height - bottom)) * 3600) / maxHeight;
+
+
+            // get click position
+            const clickX = clientX - left
+            const clickY = clientY - top
+
+            let newCenterX = currCenterX
+            let newCenterY = currCenterY
+
+            // if we click on left or right side
+            if (clickX < width / 2) {
+                newCenterX = currCenterX - (Math.round(((width / 2) - clickX) / areaWidthIncrements) * 3600)
+                setCurrCenterX(newCenterX)
+                console.log("x location: " + newCenterX);
+                // sendJsonMessage({ pan_absolute: newCenterX})
+            } else {
+                newCenterX = currCenterX + (Math.round((clickX - (width / 2)) / areaWidthIncrements) * 3600)
+                console.log("x location: " + newCenterX);
+                setCurrCenterX(newCenterX)
+            }
+
+            // if we click top or bottom
+            if (clickY > height / 2) {
+                // newCenterY = currCenterY - (Math.round((clickY - height / 2) / areaHeightIncrements) * 14400);
+                newCenterY = currCenterY + (Math.round((height / 2 - clickY) / areaHeightIncrements) * 14400);
+                console.log("y location: " + newCenterY);
+                setCurrCenterY(newCenterY)
+                // sendJsonMessage({ tilt_absolute: newCenterY})
+            } else {
+                newCenterY = currCenterY - (Math.round((clickY - height / 2) / areaHeightIncrements) * 14400);
+                console.log("y location: " + newCenterY);
+                setCurrCenterY(newCenterY)
+            }
+
+            // Clamp values to ensure they're within valid ranges
+            // newCenterX = Math.max(-maxWidth / 2, Math.min(maxWidth / 2, newCenterX));
+            // newCenterY = Math.max(-maxHeight / 2, Math.min(maxHeight / 2, newCenterY));
+            console.log("y center: " + newCenterY);
+
+            sendJsonMessage({ pan_absolute: newCenterX, tilt_absolute: newCenterY });
+
+        }
+    }
 
     // handle tap moving
     const handleTapToMove = ({ clientX, clientY }) => {
@@ -78,6 +153,7 @@ export default function PtzController() {
                 touchAreaRef.current.getBoundingClientRect();
 
             console.log(width, height);
+            console.log(clientX - left, clientY - top);
 
             // get center of element
             const centerX = width / 2;
@@ -158,38 +234,17 @@ export default function PtzController() {
         setZoomDistance(clampedZoom);
         sendJsonMessage({ zoom_absolute: Math.round(clampedZoom) });
         console.log(`Zoom set to: ${clampedZoom}`);
-    }, [sendJsonMessage, zoomMax, zoomMin]);
+    }, [zoomMax, zoomMin]);
 
-    // pinch to zoom
-    const handlePinch = usePinch(
-        ({ offset: [d], event }) => {
-            console.log(event.type);
-            if (event.type === 'wheel') {
-                event.preventDefault();
-                const newZoom = zoomDistance - d / 5; // Adjust for wheel sensitivity
-                handleZoom(newZoom);
-            } else {
-                const newZoom = zoomDistance + d / 5; // Adjust for pinch sensitivity
-                handleZoom(newZoom);
-            }
-        },
-        {
-            pinchOnWheel: true,
-            eventOptions: { passive: false },
-        }
-    );
 
     // handle gestures
     const gestureRecognizer = useGesture(
         {
-            onClick: (state) => {
-                handleTapToMove(state.event);
-            },
+            // onClick: (state) => {
+            //     handleTapToMove(state.event);
+            // },
             onPinch: ({ delta: [d], offset: [totalD], event, first, last }) => {
                 event.preventDefault();
-
-                if (first) setIsZooming(true);
-                if (last) setIsZooming(false);
                 if (event.type === 'wheel') {
                     const newZoom = zoomDistance - d / 100;
                     handleZoom(newZoom);
@@ -201,7 +256,7 @@ export default function PtzController() {
             },
         },
         {
-            pinch: { pinchOnWheel: true },
+            pinch: { pinchOnWheel: true , filterTaps: true},
             eventOptions: { passive: false }
         }
     );
@@ -268,10 +323,11 @@ export default function PtzController() {
                             className="m-4"
                         />
                     </div>
-                    <Box className="w-full h-full mt-4 p-2" ref={touchAreaRef}>
+                    <Box className="w-full h-full mt-4 p-2">
                         <animated.div
-                            // onClick={handleTapToMove}
-                            className="w-full h-full  text-cyan-50 justify-center content-center select-none shadow-2xl"
+                            onClick={handleTap}
+                            ref={touchAreaRef}
+                            className="w-full h-full  text-cyan-50 justify-center content-center select-none shadow-2xl border-red-100 border-4"
                             {...gestureRecognizer()}
                             style={{
                                 touchAction: "none",
