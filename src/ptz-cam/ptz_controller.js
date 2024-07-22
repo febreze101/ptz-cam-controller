@@ -62,8 +62,6 @@ export default function PtzController() {
             let topBound = -284_400;
             let botBound = 284_400;
 
-            console.log("leftBound: " + leftBound, "rightBound: " + rightBound, "topBound: " + topBound, "botBound: " + botBound);
-
             // get click position
             const clickX = clientX - left;
             const clickY = clientY - top;
@@ -73,18 +71,18 @@ export default function PtzController() {
 
             // if we click on left or right side
             if (clickX < width / 2) {
-                newCenterX = currCenterX - (Math.round(((width / 2) - clickX) / areaWidthIncrements) * 3600)
+                newCenterX = currCenterX + (Math.round(((width / 2) - clickX) / areaWidthIncrements) * 3600)
                 console.log("x location: " + newCenterX);
             } else {
-                newCenterX = currCenterX + (Math.round((clickX - (width / 2)) / areaWidthIncrements) * 3600)
+                newCenterX = currCenterX - (Math.round((clickX - (width / 2)) / areaWidthIncrements) * 3600)
                 console.log("x location: " + newCenterX);
             }
 
             // if we click top or bottom
             if (clickY < height / 2) {
-                newCenterY = currCenterY + (Math.round((height / 2 - clickY) / areaHeightIncrements) * 14400);
+                newCenterY = currCenterY - (Math.round((height / 2 - clickY) / areaHeightIncrements) * 14400);
             } else {
-                newCenterY = currCenterY - (Math.round((clickY - height / 2) / areaHeightIncrements) * 14400);
+                newCenterY = currCenterY + (Math.round((clickY - height / 2) / areaHeightIncrements) * 14400);
             }
 
             // Clamp values to ensure they're within valid ranges
