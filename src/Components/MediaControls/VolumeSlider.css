@@ -1,0 +1,15 @@
+.volume-slider {
+    appearance: none;
+    width: 250px;
+    height: 50px;
+    background-color: transparent;
+    /* border-radius: 5px 5; */
+}
+
+.volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 2rem;
+    height: 100%;
+    cursor: grab;
+}
+

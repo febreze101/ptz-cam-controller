@@ -7,10 +7,16 @@ import { useGesture } from "@use-gesture/react";
 import CameraPositionIndicator from "./CameraPositionIndicator";
 import { debounce } from 'lodash';
 
+const RemoteVideo = () => (
+    <video autoPlay playsInline style={{ width: '300px', height: '225px' }} />
+);
 
 export default function PtzController() {
     const [currCenterX, setCurrCenterX] = useState(0);
     const [currCenterY, setCurrCenterY] = useState(0);
+
+    const [zoomScale, setZoomScale] = useState(1);
+    
 
     const ZOOM_MAX = 100;
     const ZOOM_MIN = 1;
@@ -53,6 +59,11 @@ export default function PtzController() {
             let maxWidth = 259200; // max allowed width 72 degree FOV @ increments of 3600 per degree
             let maxHeight = 39600; // max allowed height 72 degree FOV @ increments of 3600 per degree
 
+            if (zoomScale >= 1) {
+                maxWidth = Math.round(maxWidth - (maxWidth * 0.4)) 
+                maxHeight = Math.round(maxHeight - (maxHeight * 0.4))
+            }
+
             let areaWidthIncrements = ((width - left * 2) * 3600) / maxWidth;
             let areaHeightIncrements = ((height - top - (height - bottom)) * 3600) / maxHeight;
 
@@ -91,8 +102,10 @@ export default function PtzController() {
 
             setCurrCenterX(newCenterX)
             setCurrCenterY(newCenterY);
-
-            sendJsonMessage({ pan_absolute: newCenterX, tilt_absolute: newCenterY });
+            if (zoomScale < 2) {
+                sendJsonMessage({ pan_absolute: newCenterX, tilt_absolute: newCenterY });
+            }
+            scaleZoom(newCenterX, newCenterY);
         }
     };
 
@@ -139,6 +152,26 @@ export default function PtzController() {
             eventOptions: { passive: false },
         }
     );
+
+    // scale movement wiht zoom 
+    const scaleZoom = (centerX, centerY) => {
+
+        setZoomScale(zoomDistance / 5)
+        let newCenterX;
+        let newCenterY;
+
+        console.log("zoomScale", zoomScale);
+
+        newCenterX = Math.round((centerX / zoomScale) / 3600) * 3600
+        newCenterY = Math.round((centerY / zoomScale) / 3600) * 3600
+
+        sendJsonMessage({ pan_absolute: newCenterX, tilt_absolute: newCenterY });
+
+    }
+
+    useEffect(() => {
+        scaleZoom();
+    }, [zoomDistance])
 
     return (
         <>
@@ -211,24 +244,26 @@ export default function PtzController() {
                             {...gestureRecognizer()}
                             style={{
                                 touchAction: "none",
-                                background: "#333842",
+                                // background: "#333842",
                                 borderRadius: "15px",
                             }}
                         >
+                            <RemoteVideo />
+                            {/* <img src="https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1200,h_630/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/tsah7c9evnal289z5fig/IMG%20Worlds%20of%20Adventure%20Admission%20Ticket%20in%20Dubai%20-%20Klook.jpg"/> */}
                             touch this area to interact with the camera
                             <br />
                             slide or two finger pinch to zoom
                         </animated.div>
                     </Box>
                 </div>
-                <CameraPositionIndicator
+                {/* <CameraPositionIndicator
                     aria-label={"camera-position-indicator"}
                     className="overflow-auto"
                     currCenterX={currCenterX}
                     currCenterY={currCenterY}
                     zoomLevel={zoomDistance}
                     zoomMax={ZOOM_MAX}
-                />
+                /> */}
             </Box>
         </>
     );
