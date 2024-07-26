@@ -18,9 +18,7 @@ const VolumeSlider = (props) => {
         <div className="relative bg-white flex items-center"
             style={{
                 borderRadius: '30px',
-
                 overflow: 'hidden'
-
             }}
         >
             <input
@@ -31,9 +29,6 @@ const VolumeSlider = (props) => {
                 outline='none'
                 onChange={handleVolumeChange}
                 className="volume-slider"
-                style={{
-                    // marginLeft: '10px',
-                }}
             />
             <div style={{
                 width: volume + "%",

@@ -57,19 +57,18 @@ const MediaControls = () => {
                 <Box sx={{
                     position: 'relative',
                     width: '115px',
-                    height: '300px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
                 }}>
                     <Box sx={{
                         transform: 'rotate(270deg)',
                         position: 'absolute',
-                        width: '400px', // This should match the slider's width after rotation
-                        height: '115px', // This should match the slider's height after rotation
+                        width: '254px', // This should match the slider's width after rotation
+                        height: '115px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                     }}>
                         <VolumeSlider />
                     </Box>
