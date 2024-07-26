@@ -12,9 +12,11 @@ const MediaControls = () => {
         <Box className="media-controls"
             sx={{
                 display: "flex",
+                alignContent: 'center',
+                justifyContent: 'space-evenly',
                 backgroundColor: '#323233',
                 height: '100%',
-                borderRadius: '20px',
+                borderRadius: '30px',
                 backdropFilter: 'blur(5px)',
             }}
         >
@@ -23,7 +25,6 @@ const MediaControls = () => {
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    margin: '10px',
                     justifyContent: 'space-evenly'
                 }}
             >
@@ -32,7 +33,6 @@ const MediaControls = () => {
                         width: '115px',
                         height: '115px',
                         borderRadius: '30%',
-                        margin: '10px',
                         backgroundColor: 'hsl(145, 63%, 49%)'
                     }}
                 >
@@ -43,7 +43,6 @@ const MediaControls = () => {
                         width: '115px',
                         height: '115px',
                         borderRadius: '30%',
-                        margin: '10px',
                         backgroundColor: 'hsl(204, 8%, 76%)'
                     }}
                 >

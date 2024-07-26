@@ -13,7 +13,7 @@ const VolumeSlider = (props) => {
     }
 
     return (
-        <div className="relative bg-white flex items-center mt-8"
+        <div className="relative bg-white flex items-center"
             style={{
                 borderRadius: '30px',
 
@@ -30,7 +30,7 @@ const VolumeSlider = (props) => {
                 onChange={handleVolumeChange}
                 className="volume-slider"
                 style={{
-                    marginLeft: '10px',
+                    // marginLeft: '10px',
                 }}
             />
             <div style={{

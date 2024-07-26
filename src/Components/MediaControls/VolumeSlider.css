@@ -1,9 +1,10 @@
 .volume-slider {
     appearance: none;
-    width: 250px;
-    height: 100px;
+    width: 254px;
+    height: 115px;
     background-color: transparent;
     z-index: 9999;
+    /* margin-top: -7px; */
     /* border: 1px solid red; */
     /* border-radius: 5px 5; */
 }
