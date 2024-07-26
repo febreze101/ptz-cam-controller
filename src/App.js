@@ -7,9 +7,7 @@ function App() {
   return (
     <div className="App">
       {/* <PtzController /> */}
-      <Box sx={{ margin: 50, height: 300, width: 300 }}>
         <MediaControls />
-      </Box>
     </div>
   );
 }

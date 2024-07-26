@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
 import "./VolumeSlider.css"
 
@@ -26,7 +28,7 @@ const VolumeSlider = (props) => {
                 min='0'
                 max='max'
                 value={volume}
-
+                outline='none'
                 onChange={handleVolumeChange}
                 className="volume-slider"
                 style={{
@@ -35,8 +37,12 @@ const VolumeSlider = (props) => {
             />
             <div style={{
                 width: volume + "%",
-            }} className="absolute h-full bg-blue-400 rounded">
-
+                transition: '0.5 ease'
+            }} className="absolute h-full bg-blue-400 rounded flex items-center">
+                {
+                    volume > 0 ? <VolumeUpIcon sx={{ transform: 'rotate(90deg)', fontSize: '50px', color: 'white', position: "absolute", margin: '10px' }} /> :
+                        <VolumeOffIcon sx={{ transform: 'rotate(90deg)', fontSize: '50px', color: 'black', position: "absolute", margin: '10px', transition: '0.8 ease-in' }} className="absolute" />
+                }
             </div>
         </div>
     )
