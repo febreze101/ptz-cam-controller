@@ -33,7 +33,7 @@ const VolumeSlider = (props) => {
             <div style={{
                 width: volume + "%",
                 transition: '0.5 ease'
-            }} className="absolute h-full bg-blue-400 rounded flex items-center">
+            }} outline='none' className="absolute h-full bg-blue-400 rounded flex items-center">
                 {
                     volume > 0 ? <VolumeUpIcon sx={{ transform: 'rotate(90deg)', fontSize: '50px', color: 'white', position: "absolute", margin: '10px' }} /> :
                         <VolumeOffIcon sx={{ transform: 'rotate(90deg)', fontSize: '50px', color: 'black', position: "absolute", margin: '10px', transition: '0.8 ease-in' }} className="absolute" />

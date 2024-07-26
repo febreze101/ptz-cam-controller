@@ -20,6 +20,7 @@ const MediaControls = () => {
                     borderRadius: '30px',
                     backdropFilter: 'blur(5px)',
                 }}
+                outline='none'
             >
                 {/* Buttons */}
                 <Box className="buttons"
@@ -28,6 +29,7 @@ const MediaControls = () => {
                         flexDirection: "column",
                         justifyContent: 'space-evenly'
                     }}
+                    outline='none'
                 >
                     <Button variant="contained"
                         sx={{
@@ -36,6 +38,7 @@ const MediaControls = () => {
                             borderRadius: '30%',
                             backgroundColor: 'hsl(145, 63%, 49%)'
                         }}
+                        outline='none'
                     >
                         <LocalPhoneIcon sx={{ fontSize: '50px' }} />
                     </Button>
@@ -46,6 +49,7 @@ const MediaControls = () => {
                             borderRadius: '30%',
                             backgroundColor: 'hsl(204, 8%, 76%)'
                         }}
+                        outline='none'
                     >
                         <MicOffIcon sx={{ fontSize: '50px' }} />
                     </Button>
@@ -54,13 +58,16 @@ const MediaControls = () => {
 
 
                 {/* Volume slider */}
-                <Box sx={{
-                    position: 'relative',
-                    width: '115px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
+                <Box 
+                    sx={{
+                        position: 'relative',
+                        width: '115px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                    outline='none'
+                >
                     <Box sx={{
                         transform: 'rotate(270deg)',
                         position: 'absolute',
