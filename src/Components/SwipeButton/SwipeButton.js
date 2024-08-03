@@ -1,5 +1,5 @@
 import { Height, WidthFull } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useEffect, useRef, useState } from "react";
@@ -17,7 +17,6 @@ const SwipeButton = () => {
     const MIN_BUTTON_POSITION = 8;
     const MAX_BUTTON_POSITION = 248;
     const CONTAINER_WIDTH = 336;
-    const MIN_TEXT_POSITION = 134;
 
     const [buttonPosition, setButtonPosition] = useState(MIN_BUTTON_POSITION);
     const [isDragging, setIsDragging] = useState(false);
@@ -34,24 +33,27 @@ const SwipeButton = () => {
 
     const handleTouchStart = (e) => {
         if (!isLoading) {
-            setIsDragging(true);
+            const touch = e.touches[0];
+            const buttonRect = buttonRef.current.getBoundingClientRect();
+
+            if (touch.clientX >= buttonRect.left && touch.clientX <= buttonRect.right &&
+                touch.clientY >= buttonRect.top && touch.clientY <= buttonRect.bottom) {
+                setIsDragging(true);
+                currButtonPosRef.current = buttonPosition;
+            }
         }
     }
 
     const handleTouchEnd = (e) => {
         setIsDragging(false);
-        // console.log(buttonPosition);
-        if (currButtonPosRef.current > MAX_BUTTON_POSITION * 0.9) {
-            setButtonPosition(MAX_BUTTON_POSITION)
-            // additional functionality
-            // todo: change text and change icon
+        if (currButtonPosRef.current > MAX_BUTTON_POSITION * 0.9 && isDragging) {
+            setButtonPosition(MAX_BUTTON_POSITION);
             setActionComplete(true);
             setIsLoading(true);
-
         } else {
             setIsLoading(false);
-            setButtonPosition(MIN_BUTTON_POSITION)
-            setBackgroundColor('#0D1116')
+            setButtonPosition(MIN_BUTTON_POSITION);
+            setBackgroundColor('#0D1116');
         }
     }
 
@@ -66,7 +68,6 @@ const SwipeButton = () => {
     useEffect(() => {
         let timer;
         if (isLoading) {
-            // console.log(isLoading, buttonPosition);
             timer = setTimeout(() => {
                 resetButton();
             }, 2000)
@@ -79,7 +80,8 @@ const SwipeButton = () => {
     // change background color
     useEffect(() => {
         const startColor = [13, 17, 22]; // #0D1116
-        const endColor = [22, 101, 55]; // #9FD491
+        // const endColor = [22, 101, 55]; // #9FD491
+        const endColor = [32, 45, 58]; // #202D3A
         const t = buttonPosition / MAX_BUTTON_POSITION
         if (buttonPosition > MIN_BUTTON_POSITION) {
             const newColor = lerpColor(startColor, endColor, t)
@@ -106,7 +108,6 @@ const SwipeButton = () => {
         const newButtonPosition = Math.max(MIN_BUTTON_POSITION, Math.min(touch.clientX - containerRef.current.offsetLeft - buttonWidth / 2, maxPosition))
         currButtonPosRef.current = newButtonPosition;
         setButtonPosition(newButtonPosition);
-        // console.log(currButtonPosRef.current);
     }
 
     useEffect(() => {
@@ -177,7 +178,8 @@ const SwipeButton = () => {
                     {/* <ArrowForwardIcon sx={{ color: 'white', fontSize: '56px' }} /> */}
                     {isLoading ? (
                         // Add a loading indicator here, e.g., a spinning icon
-                        <span>Loading...</span>
+                        // <span>Loading...</span>
+                        <CircularProgress color="success" />
                     ) : (
                         <ArrowForwardIcon sx={{ color: 'white', fontSize: '56px' }} />
                     )}
