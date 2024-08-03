@@ -4,6 +4,8 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useEffect, useRef, useState } from "react";
 import { animated, useSpring } from "react-spring";
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 const lerpColor = (color1, color2, factor) => {
     const result = color1.slice();
@@ -13,7 +15,7 @@ const lerpColor = (color1, color2, factor) => {
     return `rgb(${result.join(',')})`;
 }
 
-const SwipeButton = () => {
+const SwipeButton = ({ startText, completeText }) => {
     const MIN_BUTTON_POSITION = 8;
     const MAX_BUTTON_POSITION = 248;
     const CONTAINER_WIDTH = 336;
@@ -22,7 +24,6 @@ const SwipeButton = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [backgroundColor, setBackgroundColor] = useState('#0D1116');
     const [actionComplete, setActionComplete] = useState(false);
-    const [actionText, setActionText] = useState("Home Tools")
     const [isLoading, setIsLoading] = useState(false);
 
     const containerRef = useRef(null);
@@ -48,13 +49,24 @@ const SwipeButton = () => {
         setIsDragging(false);
         if (currButtonPosRef.current > MAX_BUTTON_POSITION * 0.9 && isDragging) {
             setButtonPosition(MAX_BUTTON_POSITION);
-            setActionComplete(true);
+            setActionComplete(true); // action completed
             setIsLoading(true);
         } else {
             setIsLoading(false);
             setButtonPosition(MIN_BUTTON_POSITION);
             setBackgroundColor('#0D1116');
         }
+    }
+
+    const handleTouchMove = (e) => {
+        if (!isDragging || isLoading) return;
+        const containerwidth = containerRef.current.offsetWidth;
+        const buttonWidth = buttonRef.current.offsetWidth;
+        const maxPosition = containerwidth - buttonWidth - 8;
+        const touch = e.touches[0];
+        const newButtonPosition = Math.max(MIN_BUTTON_POSITION, Math.min(touch.clientX - containerRef.current.offsetLeft - buttonWidth / 2, maxPosition))
+        currButtonPosRef.current = newButtonPosition;
+        setButtonPosition(newButtonPosition);
     }
 
     const resetButton = () => {
@@ -80,7 +92,6 @@ const SwipeButton = () => {
     // change background color
     useEffect(() => {
         const startColor = [13, 17, 22]; // #0D1116
-        // const endColor = [22, 101, 55]; // #9FD491
         const endColor = [32, 45, 58]; // #202D3A
         const t = buttonPosition / MAX_BUTTON_POSITION
         if (buttonPosition > MIN_BUTTON_POSITION) {
@@ -89,30 +100,8 @@ const SwipeButton = () => {
         }
     }, [buttonPosition])
 
-
-    // change text
-    useEffect(() => {
-        if (actionComplete) {
-            console.log(actionComplete);
-            // setActionText("Homing")
-        }
-    }, [buttonPosition])
-
-    const handleTouchMove = (e) => {
-        // console.log(buttonPosition);
-        if (!isDragging || isLoading) return;
-        const containerwidth = containerRef.current.offsetWidth;
-        const buttonWidth = buttonRef.current.offsetWidth;
-        const maxPosition = containerwidth - buttonWidth - 8;
-        const touch = e.touches[0];
-        const newButtonPosition = Math.max(MIN_BUTTON_POSITION, Math.min(touch.clientX - containerRef.current.offsetLeft - buttonWidth / 2, maxPosition))
-        currButtonPosRef.current = newButtonPosition;
-        setButtonPosition(newButtonPosition);
-    }
-
     useEffect(() => {
         const container = containerRef.current;
-
 
         container.addEventListener('touchstart', handleTouchStart, { passive: true });
         container.addEventListener('touchmove', handleTouchMove, { passive: true });
@@ -156,7 +145,7 @@ const SwipeButton = () => {
                         whiteSpace: 'nowrap',
                     }}
                 >
-                    Homing
+                    {completeText ? completeText : 'Homing'}
                 </Typography>
                 <Box
                     ref={buttonRef}
@@ -174,14 +163,11 @@ const SwipeButton = () => {
                         transition: isDragging ? 'none' : 'left 0.3s ease-out'
                     }}
                 >
-                    {/* arrow icon */}
-                    {/* <ArrowForwardIcon sx={{ color: 'white', fontSize: '56px' }} /> */}
                     {isLoading ? (
-                        // Add a loading indicator here, e.g., a spinning icon
-                        // <span>Loading...</span>
+
                         <CircularProgress color="success" />
                     ) : (
-                        <ArrowForwardIcon sx={{ color: 'white', fontSize: '56px' }} />
+                        <KeyboardDoubleArrowRightIcon sx={{ color: 'white', fontSize: '56px' }} />
                     )}
 
                 </Box>
@@ -197,13 +183,10 @@ const SwipeButton = () => {
                         whiteSpace: 'nowrap',
                     }}
                 >
-                    {actionText}
+                    {startText ? startText : 'Home Tools'}
                 </Typography>
             </Box>
-
-
         </>
-
     )
 }
 
